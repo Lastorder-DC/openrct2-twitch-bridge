@@ -1,10 +1,11 @@
+// This should not run as openrct2 plugin
 if (typeof (registerPlugin) === "undefined") {
     const fs = require('fs');
+    const net = require('net');
     const JSON5 = require('json5');
-    const Server = require('net').Server;
-    const Discord = require('discord.js');
+    const Server = net.Server;
+    const tmi = require('tmi.js');
     const server = new Server();
-    const client = new Discord.Client();
     const DISCORDDESTINATIONSTRING = /^\(([^()]+)\)/g;
     const MESSAGEORIGINSTRING = /\*\(([^()]+)\)\*\n/g;
     let BOTMENTION = new RegExp(`^<@!?-1>`);
@@ -22,21 +23,16 @@ if (typeof (registerPlugin) === "undefined") {
             if (!('port' in config)) {
                 config.port = 35711;
             }
-
-            async function sendChatToDiscord(msg) {
-                (await client.guilds.fetch(config.guild)).channels.resolve(config.channel).send(msg, {
-                    disableMentions: 'all'
-                });
-            }
-
-            function sendChatToOtherServers(msg, originServer) {
-                let message = JSON.stringify(msg);
-                for (conid in connections) {
-                    if (conid !== originServer) {
-                        connections[conid].write(message);
-                    }
-                }
-            }
+            
+            const opts = {
+                identity: {
+                    username: config.username,
+                    password: config.token
+                },
+                channels: config.channels
+            };
+            
+            const client = new tmi.client(opts);
 
             server.on('connection', (socket) => {
                 clients++;
@@ -52,10 +48,10 @@ if (typeof (registerPlugin) === "undefined") {
                         }
                         else if (msg.type === 'chat') {
                             msg.body.origin = servername;
-                            sendChatToDiscord(`**${msg.body.author}** *(${msg.body.origin})*\n${msg.body.content}`);
+                            client.say(`${msg.body.author} (${msg.body.origin}) : ${msg.body.content}`);
                         }
                         else if (msg.type === 'message') {
-                            sendChatToDiscord(`*(${servername})*\n${msg.body}`);
+                            client.say(`(${servername}) : ${msg.body}`);
                         }
                     }
                     catch (ex) {
@@ -74,6 +70,18 @@ if (typeof (registerPlugin) === "undefined") {
             server.on('error', (err) => {
                 console.log(err);
             });
+            
+            client.on('message', function(channel, tags, message, self) {
+                if(self || !message.startsWith('!')) return;
+                
+                let message = {
+                    type: 'chat',
+                    body: {
+                        author: tags.username,
+                        content: message.trim()
+                    }
+                };
+            });
 
             client.on('message', async msg => {
                 if (!msg.author.bot && msg.guild && msg.channel.id === config.channel) {
@@ -84,45 +92,17 @@ if (typeof (registerPlugin) === "undefined") {
                             content: msg.content
                         }
                     };
-                    if (msg.reference || msg.content.startsWith('(')) {
-                        let server = null;
-                        if (msg.reference) {
-                            let repliedTo = msg;
-                            while (repliedTo.reference) {
-                                repliedTo = await msg.channel.messages.fetch(repliedTo.reference.messageID);
-                            }
-                            repliedTo = MESSAGEORIGINSTRING.exec(repliedTo.content);
-                            if (repliedTo && repliedTo.length > 1) {
-                                server = repliedTo[1];
-                            }
-                        }
-                        else {
-                            let repliedTo = DISCORDDESTINATIONSTRING.exec(msg.content);
-                            if (repliedTo && repliedTo.length > 1) {
-                                server = repliedTo[1];
-                                message.body.content = msg.content.replace(DISCORDDESTINATIONSTRING, '').trim();
-                            }
-                        }
-                        if (server && server in connectionsByName) {
-                            connectionsByName[server].write(JSON.stringify(message));
-                        }
-                    }
-                    else if(clients === 1 || msg.content.match(BOTMENTION)){
-                        message.body.content = msg.content.replace(BOTMENTION, '').trim();
-                        message = JSON.stringify(message);
-                        for (conid in connections) {
-                            connections[conid].write(message);
-                        }
+                    
+                    message = JSON.stringify(message);
+                    for (conid in connections) {
+                        connections[conid].write(message);
                     }
                 }
             });
-
-            client.on('ready', () => {
-                BOTMENTION = new RegExp(`^<@!?${client.user.id}>`);
-                console.log(`Bot logged in as ${client.user.username}`);
+            
+            client.on('connected', function(addr, port) {
+                console.log(`* Connected to ${addr}:${port}`);
             });
-
-            client.login(config.botToken);
 
             server.listen(config.port, '0.0.0.0', () => {
                 console.log(`Discord Bridge server listening on ${config.port}`);
