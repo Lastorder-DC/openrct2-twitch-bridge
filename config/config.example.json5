@@ -1,6 +1,10 @@
 {
+    // port of local bridge
     "port": 35711,
-    "botToken": "DiscordBotToken",
-    "guild": "DiscordGuildID",
-    "channel": "DiscordChannelID"
+    // twitch username that bot uses
+    "username": "",
+    // twitch token with chat:read, chat:write. use https://twitchapps.com/tmi/ to get one(token owner should match with username)
+    "token": "",
+    // channel list that bot connects to
+    "channels": ["channel1", "channel2"]
 }
