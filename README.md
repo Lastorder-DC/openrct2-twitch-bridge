@@ -1,11 +1,10 @@
-# openrct2-discord-bridge
+## openrct2-twitch-bridge
 
-A plugin and Node app for OpenRCT2. Sends in-game chat to Discord and vice versa. Also sends alerts to Discord about various in-game events, such as the park rating dropping below a threshold for example.
+오픈롤코 채팅을 트위치로, 트위치 채팅을 오픈롤코로 상호 전달해주는 플러그인입니다.
 
-## Setup
-
-Modify config.json5 with the appropriate parameters and start the server/bot with `node index.js`. Make sure the plugin (`lib/discord-bridge.js`) is installed and start up an OpenRCT2 multiplayer server.
-
-## Docker Setup
-
-There are some additional steps for running this configuration in Docker. The plugin configuration needs to have the hostname set (see `config/openrct2/plugin.store.json` for an example). Then the OpenRCT2 configuration must be set to allow outbound traffic to the node server (see `config/openrct2/config.ini`). If you want to use Docker for both OpenRCT2 and the Discord bridge app, using Docker Compose can make your life a lot easier. See `docker-compose.yml` for an example on how that might look.
+## 사용법
+1. `lib` 폴더 안 `twitch-bridge.js` 파일을 오픈롤코 플러그인 폴더에 넣습니다.
+1. 브릿지 서버 실행을 위해 현재 저장소를 클론 혹은 다운로드받습니다. nodejs 및 npm이 필요합니다.
+1. 클론/다운로드후 압축해제한 폴더 위치에서 `npm install`을 실행해 필수 라이브러리를 다운로드받습니다.
+1. `config` 폴더 안 `config.example.json5` 파일을 `config.json5`로 변경합니다. 파일 내용을 참고해 적절히 채웁니다.(채널명에 `#`은 붙이지 않습니다)
+1. `node index.js` 명령으로 브릿지 서버를 시작합니다. 이후 오픈롤코 서버를 열면 채팅이 자동 연동됩니다.
