@@ -6,15 +6,17 @@ const PREFIX = new RegExp('^(!|/)');
 
 function main() {
     let onlineOnly = context.sharedStorage.get('twitch-bridge.onlineonly', true);
-    if (!onlineOnly || network.mode === 'server') {
+    if (!onlineOnly) {
         let socket = network.createSocket();
         let name = context.sharedStorage.get('twitch-bridge.name', null);
         let port = context.sharedStorage.get('twitch-bridge.port', 35711);
         let host = context.sharedStorage.get('twitch-bridge.host', '127.0.0.1');
+        let botname = context.sharedStorage.get('twitch-bridge.botname', null);
         let status = {
             parkRating: false
         }
         let reconnect = false;
+        let self = false;
         let connect = () => {
             console.log(`Attempting to connect to ${host}:${port}`);
             socket.connect(port, host, doNothing);
@@ -33,6 +35,7 @@ function main() {
                 }
             }
             else if (msg.type === 'chat') {
+                self = true;
                 network.sendMessage(`{PALELAVENDER}${('origin' in msg.body)? `(${msg.body.origin}) ` : ''}${msg.body.author}: {WHITE}${msg.body.content.replace(NEWLINE, '{NEWLINE}')}`);
             }
         });
@@ -52,19 +55,18 @@ function main() {
             status.parkRating = ratingCheck;
         })
 
-        if (network.mode === 'server') {
-            context.subscribe('network.chat', (e) => {
-                if (!e.message.match(PREFIX) && e.player !== 0) {
-                    socket.write(JSON.stringify({
-                        type: 'chat',
-                        body: {
-                            author: getPlayer(e.player).name,
-                            content: e.message
-                        }
-                    }));
-                }
-            });
-        }
+        context.subscribe('network.chat', (e) => {
+            if (!e.message.match(PREFIX) && e.player !== 0 && !self) {
+                socket.write(JSON.stringify({
+                    type: 'chat',
+                    body: {
+                        author: getPlayer(e.player).name,
+                        content: e.message
+                    }
+                }));
+            }
+            self = false;
+        });
 
         connect();
     }
