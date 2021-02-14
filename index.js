@@ -6,9 +6,6 @@ if (typeof (registerPlugin) === "undefined") {
     const Server = net.Server;
     const tmi = require('tmi.js');
     const server = new Server();
-    const DISCORDDESTINATIONSTRING = /^\(([^()]+)\)/g;
-    const MESSAGEORIGINSTRING = /\*\(([^()]+)\)\*\n/g;
-    let BOTMENTION = new RegExp(`^<@!?-1>`);
     let clients = 0;
 
     fs.readFile('config/config.json5', (err, data) => {
