@@ -71,29 +71,17 @@ if (typeof (registerPlugin) === "undefined") {
             client.on('message', function(channel, tags, message, self) {
                 if(self || !message.startsWith('!')) return;
                 
-                let message = {
+                let msg = {
                     type: 'chat',
                     body: {
                         author: tags.username,
                         content: message.trim()
                     }
                 };
-            });
-
-            client.on('message', async msg => {
-                if (!msg.author.bot && msg.guild && msg.channel.id === config.channel) {
-                    let message = {
-                        type: 'chat',
-                        body: {
-                            author: msg.author.username,
-                            content: msg.content
-                        }
-                    };
-                    
-                    message = JSON.stringify(message);
-                    for (conid in connections) {
-                        connections[conid].write(message);
-                    }
+                
+                msg = JSON.stringify(msg);
+                for (conid in connections) {
+                    connections[conid].write(msg);
                 }
             });
             
