@@ -5,12 +5,12 @@ const NEWLINE = new RegExp('\n', 'g');
 const PREFIX = new RegExp('^(!|/)');
 
 function main() {
-    let onlineOnly = context.sharedStorage.get('discord-bridge.onlineonly', true);
+    let onlineOnly = context.sharedStorage.get('twitch-bridge.onlineonly', true);
     if (!onlineOnly || network.mode === 'server') {
         let socket = network.createSocket();
-        let name = context.sharedStorage.get('discord-bridge.name', null);
-        let port = context.sharedStorage.get('discord-bridge.port', 35711);
-        let host = context.sharedStorage.get('discord-bridge.host', '127.0.0.1');
+        let name = context.sharedStorage.get('twitch-bridge.name', null);
+        let port = context.sharedStorage.get('twitch-bridge.port', 35711);
+        let host = context.sharedStorage.get('twitch-bridge.host', '127.0.0.1');
         let status = {
             parkRating: false
         }
@@ -89,9 +89,9 @@ function doNothing() {
 }
 
 registerPlugin({
-    name: 'discord-bridge',
+    name: 'twitch-bridge',
     version: '1.0.0',
-    authors: ['Cory Sanin'],
+    authors: ['Cory Sanin','Lastorder-DC'],
     type: 'remote',
     licence: 'MIT',
     main
