@@ -46,7 +46,7 @@ function main() {
             if (status.parkRating && !ratingCheck) {
                 socket.write(JSON.stringify({
                     type: 'message',
-                    body: `Park rating dropped below ${MINRATING}`
+                    body: `공원 등급이 ${MINRATING} 미만으로 떨어졌습니다!`
                 }));
             }
             status.parkRating = ratingCheck;
