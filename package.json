@@ -1,7 +1,7 @@
 {
-  "name": "openrct2-discord-bridge",
+  "name": "openrct2-twitch-bridge",
   "version": "1.0.0",
-  "description": "OpenRCT2 to Discord communication",
+  "description": "OpenRCT2 to Twitch communication",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -9,12 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CorySanin/openrct2-discord-bridge.git"
+    "url": "git+https://github.com/Lastorder-DC/openrct2-twitch-bridge.git"
   },
   "dependencies": {
     "bufferutil": "4.0.2",
-    "discord.js": "12.5.1",
-    "erlpack": "github:discordapp/erlpack",
+    "tmi.js": "1.7.1",
     "json5": "2.1.3",
     "utf-8-validate": "5.0.3",
     "zlib-sync": "0.1.7"
@@ -28,7 +27,7 @@
   "author": "Cory Sanin",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CorySanin/openrct2-discord-bridge/issues"
+    "url": "https://github.com/Lastorder-DC/openrct2-twitch-bridge/issues"
   },
-  "homepage": "https://github.com/CorySanin/openrct2-discord-bridge#readme"
+  "homepage": "https://github.com/Lastorder-DC/openrct2-twitch-bridge#readme"
 }
