@@ -33,6 +33,7 @@ if (typeof (registerPlugin) === "undefined") {
 
             server.on('connection', (socket) => {
                 clients++;
+                console.log("New client connected.");
                 let id = Date.now();
                 connections[id] = socket;
                 let servername = 'unknown server';
@@ -44,8 +45,12 @@ if (typeof (registerPlugin) === "undefined") {
                             connectionsByName[servername] = socket;
                         }
                         else if (msg.type === 'chat') {
-                            msg.body.origin = servername;
-                            client.say(`${msg.body.author} (${msg.body.origin}) : ${msg.body.content}`);
+                            let message = "";
+                            if(servername != "unknown server") message = `${msg.body.author} (${servername}) : ${msg.body.content}`;
+                            else message = `${msg.body.author} : ${msg.body.content}`;
+                            for (channel in config.channels) {
+                                client.say(config.channels[channel], message);
+                            }
                         }
                         else if (msg.type === 'message') {
                             client.say(`(${servername}) : ${msg.body}`);
@@ -69,7 +74,7 @@ if (typeof (registerPlugin) === "undefined") {
             });
             
             client.on('message', function(channel, tags, message, self) {
-                if(self || !message.startsWith('!')) return;
+                if(self || message.startsWith('!') || tags.username == config.username) return;
                 
                 let msg = {
                     type: 'chat',
@@ -90,8 +95,10 @@ if (typeof (registerPlugin) === "undefined") {
             });
 
             server.listen(config.port, '0.0.0.0', () => {
-                console.log(`Discord Bridge server listening on ${config.port}`);
+                console.log(`Twitch Bridge server listening on ${config.port}`);
             });
+            
+            client.connect();
         }
     });
 }
