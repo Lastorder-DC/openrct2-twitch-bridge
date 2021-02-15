@@ -15,7 +15,7 @@
 
 
 ## English howto
-1. Download this repo from release
+1. Download latest zip file from release
 1. copy `twitch-bridge.js` to OpenRCT's plugin folder
 1. rename `config.example.json5` to`config.json5` and edit empty vars(see comments for detail)
 1. execute bridge executable
