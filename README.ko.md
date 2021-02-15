@@ -12,11 +12,3 @@
 ## 주의사항
 1. 서버에서만 동작합니다. 클라이언트에서 실행시 아무 역할을 하지 않습니다. 이는 의도된 것입니다.
 1. 모든 채팅 메세지는 서버 명의로 출력됩니다. 서버 사용자 이름을 변경해서 다른 이름으로 출력되게 할 수 있습니다.
-
-
-## English howto
-1. Download latest zip file from release
-1. copy `twitch-bridge.js` to OpenRCT's plugin folder
-1. rename `config.example.json5` to`config.json5` and edit empty vars(see comments for detail)
-1. execute bridge executable
-1. execute OpenRCT2 and open server(or use headless mode)
