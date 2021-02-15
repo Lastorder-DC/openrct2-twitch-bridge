@@ -1,6 +1,6 @@
 # English README
 
-Send OpenRCT2 server chat to twitch, and vice versa.
+Send OpenRCT2 server chat to twitch, or vice versa.
 
 ## 🚀 Installation
 1. Download the latest version of the plugin from the [Releases page](https://github.com/Lastorder-DC/openrct2-twitch-bridge/releases).
