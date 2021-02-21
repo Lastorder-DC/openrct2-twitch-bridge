@@ -1,5 +1,9 @@
 /// <reference path="../types/openrct2.d.ts" />
 
+String.prototype.startsWith = String.prototype.startsWith || function(prefix) {
+	return this.indexOf(prefix) === 0;
+};
+
 const MINRATING = 400;
 const NEWLINE = new RegExp('\n', 'g');
 const PREFIX = new RegExp('^(!|/)');
