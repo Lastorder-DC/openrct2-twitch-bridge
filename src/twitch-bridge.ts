@@ -1,12 +1,8 @@
 /// <reference path="../types/openrct2.d.ts" />
 
-if (!String.prototype.startsWith) {
-    Object.defineProperty(String.prototype, 'startsWith', {
-        value: function(search, rawPos) {
-            var pos = rawPos > 0 ? rawPos|0 : 0;
-            return this.substring(pos, pos + search.length) === search;
-        }
-    });
+function startsWith(search, rawPos) {
+    var pos = rawPos > 0 ? rawPos|0 : 0;
+    return this.substring(pos, pos + search.length) === search;
 }
 
 const MINRATING = 400;
@@ -86,7 +82,7 @@ function main() {
                     }));
                 }
                 
-                if (e.message.startsWith("!권한신청")) {
+                if (startsWith(e.message, "!권한신청")) {
                     KEYLIST[e.player] = Math.random() * (9999 - 1000) + 1000;
                     network.sendMessage("권한을 신청하시려면 \"!인증 " + e.player + "-" + KEYLIST[e.player] + "\"라고 보내주세요.", [e.player]);
                 }
