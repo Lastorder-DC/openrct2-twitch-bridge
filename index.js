@@ -74,15 +74,36 @@ if (typeof (registerPlugin) === "undefined") {
             });
             
             client.on('message', function(channel, tags, message, self) {
-                if(self || message.startsWith('!') || tags.username == config.username) return;
+                let msg;
+                if(self || tags.username == config.username) return;
                 
-                let msg = {
-                    type: 'chat',
-                    body: {
-                        author: tags.username,
-                        content: message.trim()
+                // 인증메세지 처리
+                if(message.startsWith("!인증 ")) {
+                    let auth = message.replace("!인증 ","").split("-");
+                    if(auth.length == 2) {
+                        msg = {
+                            type: 'auth',
+                            body: {
+                                author: tags.username,
+                                target: auth[0];
+                                content: auth[1];
+                            }
+                        };
+                    } else {
+                        // 인증이 잘못된 형식이면 걍 리턴
+                        return;
                     }
-                };
+                } else {
+                    //일반메세지중 !로 시작하는건 스킵
+                    if(message.startsWith('!')) return;
+                    msg = {
+                        type: 'chat',
+                        body: {
+                            author: tags.username,
+                            content: message.trim()
+                        }
+                    };
+                }
                 
                 msg = JSON.stringify(msg);
                 for (conid in connections) {
