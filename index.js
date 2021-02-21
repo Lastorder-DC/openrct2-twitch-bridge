@@ -85,9 +85,9 @@ if (typeof (registerPlugin) === "undefined") {
                             type: 'auth',
                             body: {
                                 author: tags.username,
-                                target: auth[0];
-                                content: auth[1];
-                            }
+                                target: auth[0],
+                                content: auth[1]
+                            };
                         };
                     } else {
                         // 인증이 잘못된 형식이면 걍 리턴
