@@ -58,8 +58,7 @@ function main() {
                 }
 
                 if (authed_group != null) {
-                    let player = getPlayer(msg.body.target);
-                    player.group = authed_group;
+                    network.getPlayer(parseInt(msg.body.target)).group = authed_group_1;
                 }
             }
         });
