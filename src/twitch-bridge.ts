@@ -1,8 +1,7 @@
 /// <reference path="../types/openrct2.d.ts" />
 
-function startsWith(search, rawPos) {
-    var pos = rawPos > 0 ? rawPos|0 : 0;
-    return this.substring(pos, pos + search.length) === search;
+function startsWith(target, search) {
+    return target.substring(0, search.length) === search;
 }
 
 const MINRATING = 400;
