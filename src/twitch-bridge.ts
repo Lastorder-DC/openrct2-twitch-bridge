@@ -3,6 +3,7 @@
 const MINRATING = 400;
 const NEWLINE = new RegExp('\n', 'g');
 const PREFIX = new RegExp('^(!|/)');
+const KEYLIST = {};
 
 function main() {
     let onlineOnly = context.sharedStorage.get('twitch-bridge.onlineonly', true);
@@ -11,6 +12,7 @@ function main() {
         let name = context.sharedStorage.get('twitch-bridge.name', null);
         let port = context.sharedStorage.get('twitch-bridge.port', 35711);
         let host = context.sharedStorage.get('twitch-bridge.host', '127.0.0.1');
+        let authed_group = context.sharedStorage.get('twitch-bridge.authed_group', null);
         let status = {
             parkRating: false
         }
@@ -33,7 +35,23 @@ function main() {
                 }
             }
             else if (msg.type === 'chat') {
-                network.sendMessage(`{PALELAVENDER}${('origin' in msg.body)? `(${msg.body.origin}) ` : ''}${msg.body.author}: {WHITE}${msg.body.content.replace(NEWLINE, '{NEWLINE}')}`);
+                if (msg.body.content.startsWith("!인증 ")) {
+                    let keyid = msg.body.content.replace("!인증 ","").split("-");
+                    let playerid = keyid[0];
+                    let key = keyid[1];
+                    
+                    if (typeof KEYLIST[playerid] !== 'undefined' && KEYLIST[playerid] == key) {
+                        network.sendMessage(msg.body.author + " 계정으로 인증되었습니다.", [playerid]);
+                        KEYLIST[playerid] = null;
+                    }
+                    
+                    if (authed_group != null) {
+                        let player = getPlayer(playerid);
+                        player.group = authed_group
+                    }
+                } else {
+                    network.sendMessage(`{PALELAVENDER}${('origin' in msg.body)? `(${msg.body.origin}) ` : ''}${msg.body.author}: {WHITE}${msg.body.content.replace(NEWLINE, '{NEWLINE}')}`);
+                }
             }
         });
 
@@ -62,6 +80,11 @@ function main() {
                             content: e.message
                         }
                     }));
+                }
+                
+                if (e.message.startsWith("!권한신청")) {
+                    KEYLIST[e.player] = Math.random() * (9999 - 1000) + 1000;
+                    network.sendMessage("권한을 신청하시려면 \"!인증 " + e.player + "-" + KEYLIST[e.player] + "\"라고 보내주세요.", [e.player]);
                 }
             });
         }
