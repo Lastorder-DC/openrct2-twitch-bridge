@@ -10,6 +10,16 @@ const PREFIX = new RegExp('^(!|/)');
 const KEYLIST = {};
 
 function main() {
+    var version = context.sharedStorage.get('twitch-bridge.version', "0");
+	if (version == "0") {
+        context.sharedStorage.set('twitch-bridge.version', "1.0.2")
+		context.sharedStorage.set('twitch-bridge.onlineonly', true);
+		context.sharedStorage.set('twitch-bridge.name', null);
+		context.sharedStorage.set('twitch-bridge.port', 35711);
+		context.sharedStorage.set('twitch-bridge.host', '127.0.0.1');
+		context.sharedStorage.set('twitch-bridge.authed_group', null);
+	}
+    
     let onlineOnly = context.sharedStorage.get('twitch-bridge.onlineonly', true);
     if (!onlineOnly || network.mode === 'server') {
         let socket = network.createSocket();
@@ -112,7 +122,7 @@ function doNothing() {
 
 registerPlugin({
     name: 'twitch-bridge',
-    version: '1.0.0',
+    version: '1.0.2',
     authors: ['Cory Sanin','Lastorder-DC'],
     type: 'remote',
     licence: 'MIT',
