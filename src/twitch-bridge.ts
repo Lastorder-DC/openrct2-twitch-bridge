@@ -82,7 +82,7 @@ function main() {
                 }
                 
                 if (startsWith(e.message, "!권한신청")) {
-                    KEYLIST[e.player] = parseInt(Math.random() * (9999 - 1000) + 1000);
+                    KEYLIST[e.player] = parseInt("" + Math.random() * (9999 - 1000) + 1000);
                     network.sendMessage("권한을 신청하시려면 \"!인증 " + e.player + "-" + KEYLIST[e.player] + "\"라고 보내주세요.", [e.player]);
                 }
             });
