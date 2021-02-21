@@ -35,22 +35,17 @@ function main() {
                 }
             }
             else if (msg.type === 'chat') {
-                if (msg.body.content.startsWith("!인증 ")) {
-                    let keyid = msg.body.content.replace("!인증 ","").split("-");
-                    let playerid = keyid[0];
-                    let key = keyid[1];
-                    
-                    if (typeof KEYLIST[playerid] !== 'undefined' && KEYLIST[playerid] == key) {
-                        network.sendMessage(msg.body.author + " 계정으로 인증되었습니다.", [playerid]);
-                        KEYLIST[playerid] = null;
-                    }
-                    
-                    if (authed_group != null) {
-                        let player = getPlayer(playerid);
-                        player.group = authed_group
-                    }
-                } else {
-                    network.sendMessage(`{PALELAVENDER}${('origin' in msg.body)? `(${msg.body.origin}) ` : ''}${msg.body.author}: {WHITE}${msg.body.content.replace(NEWLINE, '{NEWLINE}')}`);
+                network.sendMessage(`{PALELAVENDER}${('origin' in msg.body)? `(${msg.body.origin}) ` : ''}${msg.body.author}: {WHITE}${msg.body.content.replace(NEWLINE, '{NEWLINE}')}`);
+            }
+            else if (msg.type === 'auth') {
+                if (typeof KEYLIST[msg.body.target] !== 'undefined' && KEYLIST[msg.body.target] == msg.body.content) {
+                    network.sendMessage(msg.body.author + " 계정으로 인증되었습니다.", [msg.body.target]);
+                    KEYLIST[msg.body.target] = null;
+                }
+
+                if (authed_group != null) {
+                    let player = getPlayer(msg.body.target);
+                    player.group = authed_group;
                 }
             }
         });
